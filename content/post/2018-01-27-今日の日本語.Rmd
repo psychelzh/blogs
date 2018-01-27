@@ -1,0 +1,37 @@
+---
+title: 今日の日本語
+author: 張亮
+date: '2018-01-27'
+slug: 今日の日本語
+categories:
+  - Learning
+tags:
+  - 日本語
+---
+
+Today I learned lesson 5 of [NHK Japanese course](https://www.nhk.or.jp/lesson/chinese/).　Lesson conversation:
+
+>
+私の部屋はこちらです。どうぞ。
+>
+すごい。これは全部マンガ？
+>
+それは私の宝物です。私は毎日マンガを読みます。
+
+Without Chinese character:
+
+>
+わたしのへやはこちらです。どうぞ。
+>
+すごい。これはぜんぶマンガ？
+>
+それはわたしのたからものです。わたしはまいにちマンガをよみます。
+
+Translation:
+
+>
+Here is my room. Have a look, please!
+>
+Well, are these all cartoons?
+>
+Those are my treasures. I read cartoons every day.

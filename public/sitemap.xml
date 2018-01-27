@@ -8,6 +8,11 @@
   </url>
   
   <url>
+    <loc>/post/2018/01/27/%E4%BB%8A%E6%97%A5%E3%81%AE%E6%97%A5%E6%9C%AC%E8%AA%9E/</loc>
+    <lastmod>2018-01-27T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/categories/</loc>
     <priority>0</priority>
   </url>
@@ -47,6 +52,12 @@
   
   <url>
     <loc>/tags/</loc>
+    <lastmod>2018-01-27T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/%E6%97%A5%E6%9C%AC%E8%AA%9E/</loc>
     <lastmod>2018-01-27T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
