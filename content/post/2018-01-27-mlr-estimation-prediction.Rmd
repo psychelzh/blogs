@@ -1,0 +1,35 @@
+---
+title: MLR Estimation and Prediction
+author: Liang Zhang
+date: '2018-01-27'
+slug: mlr-estimation-and-prediction
+categories:
+  - Learning
+tags:
+  - Statistics
+  - Linear Regression
+---
+
+# Introduction
+
+> A typical regression analysis involves the following steps:
+>
+1. Model formulation (determine predictors and response variables)
+1. Model estimation (estimate model pramaters)
+1. Model evaluation (evaluate whether the model fits data or not)
+1. Model use (use the model to estimate or predict response given predictors)
+
+Here we focus on **model use**.
+
+## Model use
+
+There are typically two types of questions for model use:
+
+* Estimate the average response for a given set of predictors.
+* Predict a new response for a given set of predictors.
+
+So what is the difference between these two? A quick answer might be that estimation is to calculate at the **population** level (mean of all the subjects with the given set of predictors), and prediction is to calculate at the **individual** level (predict response for a new subject with the given set of predictors). Mathematically, it is proved[^1] that there will be a larger random error for prediction issues; and the real difference comes from the standard error when we get the interval results. The two types of interval are named **confidence interal** and **prediction interval** respectively, and the prediction interval would always be larger for the same model.
+
+In `R`, `predict` can do both of the jobs. It has a parameter `interval`, you can specify either "prediction" or "confidence" to get the prediction interval and confidence interval respectively.
+
+[^1]: See [this answer on *StackExchange*](https://stats.stackexchange.com/a/16498/107692).
