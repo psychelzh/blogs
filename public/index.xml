@@ -1,47 +1,0 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Home on Liang&#39;s tracks</title>
-    <link>/</link>
-    <description>Recent content in Home on Liang&#39;s tracks</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-US</language>
-    <lastBuildDate>Sat, 27 Jan 2018 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
-    
-    
-    <item>
-      <title>MLR Estimation and Prediction</title>
-      <link>/post/2018/01/27/mlr-estimation-and-prediction/</link>
-      <pubDate>Sat, 27 Jan 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/post/2018/01/27/mlr-estimation-and-prediction/</guid>
-      <description>IntroductionA typical regression analysis involves the following steps:
-Model formulation (determine predictors and response variables)Model estimation (estimate model pramaters)Model evaluation (evaluate whether the model fits data or not)Model use (use the model to estimate or predict response given predictors)Here we focus on model use.
-Model useThere are typically two types of questions for model use:
-Estimate the average response for a given set of predictors.</description>
-    </item>
-    
-    <item>
-      <title>今日の日本語</title>
-      <link>/post/2018/01/27/%E4%BB%8A%E6%97%A5%E3%81%AE%E6%97%A5%E6%9C%AC%E8%AA%9E/</link>
-      <pubDate>Sat, 27 Jan 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/post/2018/01/27/%E4%BB%8A%E6%97%A5%E3%81%AE%E6%97%A5%E6%9C%AC%E8%AA%9E/</guid>
-      <description>Today I learned lesson 5 of NHK Japanese course. Lesson conversation: 私の部屋はこちらです。どうぞ。 すごい。これは全部マンガ？ それは私の宝物です。私は毎日マンガを読みます。 Without Chinese character: わたしのへ</description>
-    </item>
-    
-    <item>
-      <title>Life events</title>
-      <link>/about/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/about/</guid>
-      <description>I am now a Research Assistant at Beijing Normal University, China. And I studied here for long years through my bachelor and master degrees.
-Education:
- 2014-2017, Master Degree, Beijing Normal University, Cognitive Neuroscience 2009-2013, Bachelor Degree, Beijing Normal University, Statistics  </description>
-    </item>
-    
-  </channel>
-</rss>
