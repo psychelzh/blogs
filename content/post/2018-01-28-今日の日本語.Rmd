@@ -1,0 +1,37 @@
+---
+title: 今日の日本語
+author: 張亮
+date: '2018-01-28'
+slug: 今日の日本語
+categories:
+  - Learning
+tags:
+  - 日本語
+---
+
+Today I learned lesson 6 of [NHK Japanese course](https://www.nhk.or.jp/lesson/chinese/). Lesson conversation:
+
+>
+ところでアンナさん。電話番号は何番ですか。
+>
+ええと。０８０－１２３４－...
+>
+ありがとう。じゃ、今度、電話をしますね。
+
+Without Chinese character:
+
+>
+ところでアンナさん。でんわばんごうはなんばんですか。
+>
+ええと。れいはちれいいちにさんよん。
+>
+ありがとう。じゃ、こんど、でんわをしますね。
+
+Translation:
+
+>
+By the way, what is your phone number, Anna?
+>
+Let me see. 080-1234-...
+>
+Thank you. Let's contact with phone then.

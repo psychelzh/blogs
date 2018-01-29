@@ -1,0 +1,31 @@
+---
+title: Advantages of "pooling" data
+author: Liang Zhang
+date: '2018-01-28'
+draft: true
+slug: advantages-of-pooling-data
+categories:
+  - Learning
+tags:
+  - Linear Regression
+  - Statistics
+---
+
+# Introduction
+
+In real study, we would readily collect categorical data, e.g., gender, school grade, etc. Here we focus on categorical data with two categories (or levels) only (also called **binary variable**), because those with more than two categories can be easily cracked likewise with one or more dummy variables. 
+
+Here we use a [dataset](https://onlinecourses.science.psu.edu/stat501/sites/onlinecourses.science.psu.edu.stat501/files/data/birthsmokers.txt) collecting birth weight (**Wgt**, $y$) of 32 babies and information of smoking (**Smoking**, $x_1$) and length of gestation (**Gest**, $x_2$) of mothers. $x_1$ is a binary variable, whose value is either "yes" or "no", while other variables are quantitative variables.
+
+Here we plot two figures for this dataset:
+
+```{r load data and visualization, message=FALSE, warning=FALSE, fig.cap=c("Matrix plot of all variables", "Linear trend of different groups")}
+library(tidyverse)
+birthsmoke <- read.table("https://onlinecourses.science.psu.edu/stat501/sites/onlinecourses.science.psu.edu.stat501/files/data/birthsmokers.txt", header = TRUE)
+plot(birthsmoke)
+ggplot(birthsmoke, aes(Gest, Wgt, color = Smoke)) +
+  geom_point(shape = 1, size = 3) +
+  geom_smooth(method = "glm", se = FALSE) +
+  theme_minimal()
+```
+
