@@ -1,0 +1,40 @@
+---
+title: Advantages of "pooling" data
+author: Liang Zhang
+date: '2018-01-28'
+draft: true
+slug: advantages-of-pooling-data
+categories:
+  - Learning
+tags:
+  - Linear Regression
+  - Statistics
+---
+
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>In real study, we would readily collect categorical data, e.g., gender, school grade, etc. Here we focus on categorical data with two categories (or levels) only (also called <strong>binary variable</strong>), because those with more than two categories can be easily cracked likewise with one or more dummy variables.</p>
+<p>Here we use a <a href="https://onlinecourses.science.psu.edu/stat501/sites/onlinecourses.science.psu.edu.stat501/files/data/birthsmokers.txt">dataset</a> collecting birth weight (<strong>Wgt</strong>, <span class="math inline">\(y\)</span>) of 32 babies and information of smoking (<strong>Smoking</strong>, <span class="math inline">\(x_1\)</span>) and length of gestation (<strong>Gest</strong>, <span class="math inline">\(x_2\)</span>) of mothers. <span class="math inline">\(x_1\)</span> is a binary variable, whose value is either “yes” or “no”, while other variables are quantitative variables.</p>
+<p>Here we plot two figures for this dataset:</p>
+<pre class="r"><code>library(tidyverse)
+birthsmoke &lt;- read.table(&quot;https://onlinecourses.science.psu.edu/stat501/sites/onlinecourses.science.psu.edu.stat501/files/data/birthsmokers.txt&quot;, header = TRUE)
+plot(birthsmoke)</code></pre>
+<div class="figure">
+<img src="/post/2018-01-28-advantages-of-pooling-data_files/figure-html/load%20data%20and%20visualization-1.png" alt="Matrix plot of all variables" width="672" />
+<p class="caption">
+(#fig:load data and visualization)Matrix plot of all variables
+</p>
+</div>
+<pre class="r"><code>ggplot(birthsmoke, aes(Gest, Wgt, color = Smoke)) +
+  geom_point(shape = 1, size = 3) +
+  geom_smooth(method = &quot;glm&quot;, se = FALSE) +
+  theme_minimal()</code></pre>
+<div class="figure">
+<img src="/post/2018-01-28-advantages-of-pooling-data_files/figure-html/load%20data%20and%20visualization-2.png" alt="Linear trend of different groups" width="672" />
+<p class="caption">
+(#fig:load data and visualization)Linear trend of different groups
+</p>
+</div>
+</div>
