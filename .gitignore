@@ -1,4 +1,8 @@
+# folders or files from RStudio project
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
+
+# cached files from blogdown
+blogdown

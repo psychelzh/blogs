@@ -1,8 +1,10 @@
 ---
 title: Advantages of "pooling" data
 author: Liang Zhang
-date: '2018-01-28'
-draft: true
+date: '2018-01-30'
+output:
+  blogdown::html_page:
+    toc: true
 slug: advantages-of-pooling-data
 categories:
   - Learning
@@ -12,6 +14,19 @@ tags:
 ---
 
 
+<div id="TOC">
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#advantages">Advantages</a><ul>
+<li><a href="#the-first-advantage">The first advantage</a><ul>
+<li><a href="#fit-two-models">Fit two models</a></li>
+<li><a href="#fit-one-model">Fit one model</a></li>
+<li><a href="#comparison">Comparison</a></li>
+</ul></li>
+<li><a href="#the-second-advantage">The second advantage</a></li>
+</ul></li>
+</ul>
+</div>
 
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
@@ -19,22 +34,175 @@ tags:
 <p>Here we use a <a href="https://onlinecourses.science.psu.edu/stat501/sites/onlinecourses.science.psu.edu.stat501/files/data/birthsmokers.txt">dataset</a> collecting birth weight (<strong>Wgt</strong>, <span class="math inline">\(y\)</span>) of 32 babies and information of smoking (<strong>Smoking</strong>, <span class="math inline">\(x_1\)</span>) and length of gestation (<strong>Gest</strong>, <span class="math inline">\(x_2\)</span>) of mothers. <span class="math inline">\(x_1\)</span> is a binary variable, whose value is either “yes” or “no”, while other variables are quantitative variables.</p>
 <p>Here we plot two figures for this dataset:</p>
 <pre class="r"><code>library(tidyverse)
+library(GGally)
+library(extrafont)
 birthsmoke &lt;- read.table(&quot;https://onlinecourses.science.psu.edu/stat501/sites/onlinecourses.science.psu.edu.stat501/files/data/birthsmokers.txt&quot;, header = TRUE)
-plot(birthsmoke)</code></pre>
-<div class="figure">
-<img src="/post/2018-01-28-advantages-of-pooling-data_files/figure-html/load%20data%20and%20visualization-1.png" alt="Matrix plot of all variables" width="672" />
+ggpairs(birthsmoke, upper = &quot;blank&quot;, lower = list(combo = &quot;box_no_facet&quot;)) +
+  theme_minimal() +
+  theme(
+    text = element_text(family = &quot;Eras Medium ITC&quot;),
+    axis.text = element_text(size = 14),
+    strip.text = element_text(size = 28)
+  )
+ggplot(birthsmoke, aes(Gest, Wgt, color = Smoke)) +
+  geom_point(shape = 1, size = 3, stroke = 2) +
+  geom_smooth(method = &quot;glm&quot;, se = FALSE) +
+  theme_minimal() +
+  theme(
+    text = element_text(family = &quot;Eras Medium ITC&quot;),
+    axis.title = element_text(size = 32),
+    axis.text = element_text(size = 20),
+    legend.title = element_text(size = 24),
+    legend.text = element_text(size = 20)
+  )</code></pre>
+<div class="figure"><span id="fig:load-data-and-visualization"></span>
+<img src="/post/2018-01-28-advantages-of-pooling-data_files/figure-html/load-data-and-visualization-1.png" alt="Matrix plot of all variables (Left) and linear trend of different groups (Right)" width="50%" /><img src="/post/2018-01-28-advantages-of-pooling-data_files/figure-html/load-data-and-visualization-2.png" alt="Matrix plot of all variables (Left) and linear trend of different groups (Right)" width="50%" />
 <p class="caption">
-(#fig:load data and visualization)Matrix plot of all variables
+Figure 1: Matrix plot of all variables (Left) and linear trend of different groups (Right)
 </p>
 </div>
-<pre class="r"><code>ggplot(birthsmoke, aes(Gest, Wgt, color = Smoke)) +
-  geom_point(shape = 1, size = 3) +
-  geom_smooth(method = &quot;glm&quot;, se = FALSE) +
-  theme_minimal()</code></pre>
-<div class="figure">
-<img src="/post/2018-01-28-advantages-of-pooling-data_files/figure-html/load%20data%20and%20visualization-2.png" alt="Linear trend of different groups" width="672" />
-<p class="caption">
-(#fig:load data and visualization)Linear trend of different groups
-</p>
+<p>The categorical predictor “Smoke” has two levels, and from the above trend plot we know there is a similar trend between “Weight” and “Gestation” for both levels of “Smoke”.</p>
+<p>Now we would try to find a good way to find the association between these three variables. Basically, there are two ways: we could fit a simple linear regression model for each level of “Smoke” respectively, or we could fit a multipe linear regression model. But which is better? Statistically, there are two advantages to take the second way, which is called <strong>“pooling data”</strong>.</p>
+</div>
+<div id="advantages" class="section level1">
+<h1>Advantages</h1>
+<div id="the-first-advantage" class="section level2">
+<h2>The first advantage</h2>
+<p>Shortly, pooling will let the model have smaller standard error, which is very good for prediction. Here we try each way and explain it.</p>
+<div id="fit-two-models" class="section level3">
+<h3>Fit two models</h3>
+<p>We separate the data based on smoking or not, and fit a model for each set (16 subjects each). Here is the model summary.</p>
+<pre class="r"><code># fit for Smokers
+smoke_yes &lt;- subset(birthsmoke, Smoke == &quot;yes&quot;)
+mdl_yes &lt;- lm(Wgt ~ Gest, smoke_yes)
+(mdl_yes_smry &lt;- summary(mdl_yes))</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Wgt ~ Gest, data = smoke_yes)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -228.53  -64.86  -19.10   93.89  184.53 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -2474.56     553.97  -4.467 0.000532 ***
+## Gest          139.03      14.11   9.851 1.12e-07 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 126.6 on 14 degrees of freedom
+## Multiple R-squared:  0.8739, Adjusted R-squared:  0.8649 
+## F-statistic: 97.04 on 1 and 14 DF,  p-value: 1.125e-07</code></pre>
+<pre class="r"><code># fit for non-Smokers
+smoke_no &lt;- subset(birthsmoke, Smoke == &quot;no&quot;)
+mdl_no &lt;- lm(Wgt ~ Gest, smoke_no)
+(mdl_no_smry &lt;- summary(mdl_no))</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Wgt ~ Gest, data = smoke_no)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -171.52 -101.59   23.28   83.63  139.48 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -2546.14     457.29  -5.568 6.93e-05 ***
+## Gest          147.21      11.97  12.294 6.85e-09 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 106.9 on 14 degrees of freedom
+## Multiple R-squared:  0.9152, Adjusted R-squared:  0.9092 
+## F-statistic: 151.1 on 1 and 14 DF,  p-value: 6.852e-09</code></pre>
+<p>The standard errors of the slope parameter of “Gest” are 14.11 and 11.97 respectively. And</p>
+<ul>
+<li>For smoker mothers, we could infer that the confidence interval (CI) of baby weight with 38 weeks gestation is [2731.7, 2885.3]. And the width of CI is 153.6.</li>
+<li>For non-smoker mothers, we could infer that the confidence interval of baby weight with 38 weeks gestation is [2990.3, 3105.2]. And the width of CI is 114.9.</li>
+</ul>
+</div>
+<div id="fit-one-model" class="section level3">
+<h3>Fit one model</h3>
+<pre class="r"><code># fit for both type
+mdl &lt;- lm(Wgt ~ Gest + Smoke, birthsmoke)
+mdl_pre &lt;- round(predict(mdl, data.frame(Gest = 38, Smoke = c(&quot;yes&quot;, &quot;no&quot;)), interval = &quot;confidence&quot;), digits = 1)
+(mdl_smry &lt;- summary(mdl))</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Wgt ~ Gest + Smoke, data = birthsmoke)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -223.693  -92.063   -9.365   79.663  197.507 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -2389.573    349.206  -6.843 1.63e-07 ***
+## Gest          143.100      9.128  15.677 1.07e-15 ***
+## Smokeyes     -244.544     41.982  -5.825 2.58e-06 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 115.5 on 29 degrees of freedom
+## Multiple R-squared:  0.8964, Adjusted R-squared:  0.8892 
+## F-statistic: 125.4 on 2 and 29 DF,  p-value: 5.289e-15</code></pre>
+<p>The standard error of the slope parameter of “Gest” is 9.128, smaller than both of the previous two models. And</p>
+<ul>
+<li>For smoker mothers, we could infer that the confidence interval (CI) of baby weight with 38 weeks gestation is [2740.6, 2866.8]. And the width of CI is 126.2.</li>
+<li>For non-smoker mothers, we could infer that the confidence interval of baby weight with 38 weeks gestation is [2989.1, 3107.4]. And the width of CI is 118.3.</li>
+</ul>
+</div>
+<div id="comparison" class="section level3">
+<h3>Comparison</h3>
+<p>To better compare the results, look at the following table:</p>
+<table>
+<caption><span id="tab:table-compare-two-ways">Table 1: </span>Prediction results comparsion</caption>
+<thead>
+<tr class="header">
+<th align="left">Smoke</th>
+<th align="left">Model</th>
+<th align="right">Estimate</th>
+<th align="right">Standard Error</th>
+<th align="right">Width of CI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">yes</td>
+<td align="left">non-pooled</td>
+<td align="right">2808.5</td>
+<td align="right">14.11</td>
+<td align="right">153.6</td>
+</tr>
+<tr class="even">
+<td align="left">yes</td>
+<td align="left">pooled</td>
+<td align="right">2803.7</td>
+<td align="right">9.13</td>
+<td align="right">126.2</td>
+</tr>
+<tr class="odd">
+<td align="left">no</td>
+<td align="left">non-pooled</td>
+<td align="right">3047.7</td>
+<td align="right">11.97</td>
+<td align="right">114.9</td>
+</tr>
+<tr class="even">
+<td align="left">no</td>
+<td align="left">pooled</td>
+<td align="right">3048.2</td>
+<td align="right">9.13</td>
+<td align="right">118.3</td>
+</tr>
+</tbody>
+</table>
+<p>From this table, we would know that it is better to use “pooled” data and fit only one multiple linear regression.</p>
+</div>
+</div>
+<div id="the-second-advantage" class="section level2">
+<h2>The second advantage</h2>
+<p>The second advantage would be very explicit. We could infer how are baby weight and gestation duration are related after taking consideration of mother smoking status very easily if we fit only one model using the “pooled data”. However, if we fit one model for each group of “Smoke”, that task would become impossible.</p>
 </div>
 </div>

@@ -1,8 +1,10 @@
 ---
 title: Advantages of "pooling" data
 author: Liang Zhang
-date: '2018-01-28'
-draft: true
+date: '2018-01-30'
+output:
+  blogdown::html_page:
+    toc: true
 slug: advantages-of-pooling-data
 categories:
   - Learning
@@ -19,13 +21,108 @@ Here we use a [dataset](https://onlinecourses.science.psu.edu/stat501/sites/onli
 
 Here we plot two figures for this dataset:
 
-```{r load data and visualization, message=FALSE, warning=FALSE, fig.cap=c("Matrix plot of all variables", "Linear trend of different groups")}
+```{r load-data-and-visualization, message=FALSE, warning=FALSE, out.width="50%", fig.cap="Matrix plot of all variables (Left) and linear trend of different groups (Right)", fig.show='hold'}
 library(tidyverse)
+library(GGally)
+library(extrafont)
 birthsmoke <- read.table("https://onlinecourses.science.psu.edu/stat501/sites/onlinecourses.science.psu.edu.stat501/files/data/birthsmokers.txt", header = TRUE)
-plot(birthsmoke)
+ggpairs(birthsmoke, upper = "blank", lower = list(combo = "box_no_facet")) +
+  theme_minimal() +
+  theme(
+    text = element_text(family = "Eras Medium ITC"),
+    axis.text = element_text(size = 14),
+    strip.text = element_text(size = 28)
+  )
 ggplot(birthsmoke, aes(Gest, Wgt, color = Smoke)) +
-  geom_point(shape = 1, size = 3) +
+  geom_point(shape = 1, size = 3, stroke = 2) +
   geom_smooth(method = "glm", se = FALSE) +
-  theme_minimal()
+  theme_minimal() +
+  theme(
+    text = element_text(family = "Eras Medium ITC"),
+    axis.title = element_text(size = 32),
+    axis.text = element_text(size = 20),
+    legend.title = element_text(size = 24),
+    legend.text = element_text(size = 20)
+  )
 ```
 
+The categorical predictor "Smoke" has two levels, and from the above trend plot we know there is a similar trend between "Weight" and "Gestation" for both levels of "Smoke".
+
+Now we would try to find a good way to find the association between these three variables. Basically, there are two ways: we could fit a simple linear regression model for each level of "Smoke" respectively, or we could fit a multipe linear regression model. But which is better? Statistically, there are two advantages to take the second way, which is called **"pooling data"**.
+
+# Advantages
+
+## The first advantage
+
+Shortly, pooling will let the model have smaller standard error, which is very good for prediction. Here we try each way and explain it.
+
+### Fit two models
+
+We separate the data based on smoking or not, and fit a model for each set (16 subjects each). Here is the model summary.
+
+```{r two-models, echo=c(-4, -9)}
+# fit for Smokers
+smoke_yes <- subset(birthsmoke, Smoke == "yes")
+mdl_yes <- lm(Wgt ~ Gest, smoke_yes)
+mdl_yes_pre <- round(predict(mdl_yes, data.frame(Gest = 38), interval = "confidence"), digits = 1)
+(mdl_yes_smry <- summary(mdl_yes))
+# fit for non-Smokers
+smoke_no <- subset(birthsmoke, Smoke == "no")
+mdl_no <- lm(Wgt ~ Gest, smoke_no)
+mdl_no_pre <- round(predict(mdl_no, data.frame(Gest = 38), interval = "confidence"), digits = 1)
+(mdl_no_smry <- summary(mdl_no))
+```
+
+The standard errors of the slope parameter of "Gest" are 14.11 and 11.97 respectively. And
+
+* For smoker mothers, we could infer that the confidence interval (CI) of baby weight with 38 weeks gestation is [`r format(mdl_yes_pre[2], nsmall = 1)`, `r format(mdl_yes_pre[3], nsmall = 1)`]. And the width of CI is `r format(round(diff(mdl_yes_pre[2:3]), digits = 1), nsmall = 1)`.
+* For non-smoker mothers, we could infer that the confidence interval of baby weight with 38 weeks gestation is [`r format(mdl_no_pre[2], nsmall = 1)`, `r format(mdl_no_pre[3], nsmall = 1)`]. And the width of CI is `r format(round(diff(mdl_no_pre[2:3]), digits = 1), nsmall = 1)`.
+
+### Fit one model
+
+```{r one-model}
+# fit for both type
+mdl <- lm(Wgt ~ Gest + Smoke, birthsmoke)
+mdl_pre <- round(predict(mdl, data.frame(Gest = 38, Smoke = c("yes", "no")), interval = "confidence"), digits = 1)
+(mdl_smry <- summary(mdl))
+```
+
+The standard error of the slope parameter of "Gest" is 9.128, smaller than both of the previous two models. And
+
+* For smoker mothers, we could infer that the confidence interval (CI) of baby weight with 38 weeks gestation is [`r format(mdl_pre[1, 2], nsmall = 1)`, `r format(mdl_pre[1, 3], nsmall = 1)`]. And the width of CI is `r format(round(diff(mdl_pre[1, 2:3]), digits = 1), nsmall = 1)`.
+* For non-smoker mothers, we could infer that the confidence interval of baby weight with 38 weeks gestation is [`r format(mdl_pre[2, 2], nsmall = 1)`, `r format(mdl_pre[2, 3], nsmall = 1)`]. And the width of CI is `r format(round(diff(mdl_pre[2, 2:3]), digits = 1), nsmall = 1)`.
+
+### Comparison
+
+To better compare the results, look at the following table:
+
+```{r table-compare-two-ways, echo=FALSE}
+data.frame(
+  Smoke = rep(c("yes", "no"), each = 2),
+  Model = c("non-pooled", "pooled"),
+  Estimate = c(mdl_yes_pre[1], mdl_pre[1, 1], mdl_no_pre[1], mdl_pre[2, 1]),
+  SE = c(
+    mdl_yes_smry$coefficients["Gest", "Std. Error"],
+    mdl_smry$coefficients["Gest", "Std. Error"],
+    mdl_no_smry$coefficients["Gest", "Std. Error"],
+    mdl_smry$coefficients["Gest", "Std. Error"]
+  ),
+  Width = c(
+    diff(mdl_yes_pre[2:3]),
+    diff(mdl_pre[1, 2:3]),
+    diff(mdl_no_pre[2:3]),
+    diff(mdl_pre[2, 2:3])
+  )
+) %>% 
+  knitr::kable(
+    digits = 2,
+    col.names = c("Smoke", "Model", "Estimate", "Standard Error", "Width of CI"),
+    caption = "Prediction results comparsion"
+  )
+```
+
+From this table, we would know that it is better to use "pooled" data and fit only one multiple linear regression.
+
+## The second advantage
+
+The second advantage would be very explicit. We could infer how are baby weight and gestation duration are related after taking consideration of mother smoking status very easily if we fit only one model using the "pooled data". However, if we fit one model for each group of "Smoke", that task would become impossible.
