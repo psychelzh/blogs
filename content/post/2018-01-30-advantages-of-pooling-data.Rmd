@@ -62,13 +62,11 @@ We separate the data based on smoking or not, and fit a model for each set (16 s
 
 ```{r two-models, echo=c(-4, -9)}
 # fit for Smokers
-smoke_yes <- subset(birthsmoke, Smoke == "yes")
-mdl_yes <- lm(Wgt ~ Gest, smoke_yes)
+mdl_yes <- lm(Wgt ~ Gest, birthsmoke, Smoke =="yes")
 mdl_yes_pre <- round(predict(mdl_yes, data.frame(Gest = 38), interval = "confidence"), digits = 1)
 (mdl_yes_smry <- summary(mdl_yes))
 # fit for non-Smokers
-smoke_no <- subset(birthsmoke, Smoke == "no")
-mdl_no <- lm(Wgt ~ Gest, smoke_no)
+mdl_no <- lm(Wgt ~ Gest, birthsmoke, Smoke == "no")
 mdl_no_pre <- round(predict(mdl_no, data.frame(Gest = 38), interval = "confidence"), digits = 1)
 (mdl_no_smry <- summary(mdl_no))
 ```

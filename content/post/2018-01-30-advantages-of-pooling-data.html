@@ -56,7 +56,7 @@ ggplot(birthsmoke, aes(Gest, Wgt, color = Smoke)) +
     legend.text = element_text(size = 20)
   )</code></pre>
 <div class="figure"><span id="fig:load-data-and-visualization"></span>
-<img src="/post/2018-01-28-advantages-of-pooling-data_files/figure-html/load-data-and-visualization-1.png" alt="Matrix plot of all variables (Left) and linear trend of different groups (Right)" width="50%" /><img src="/post/2018-01-28-advantages-of-pooling-data_files/figure-html/load-data-and-visualization-2.png" alt="Matrix plot of all variables (Left) and linear trend of different groups (Right)" width="50%" />
+<img src="/post/2018-01-30-advantages-of-pooling-data_files/figure-html/load-data-and-visualization-1.png" alt="Matrix plot of all variables (Left) and linear trend of different groups (Right)" width="50%" /><img src="/post/2018-01-30-advantages-of-pooling-data_files/figure-html/load-data-and-visualization-2.png" alt="Matrix plot of all variables (Left) and linear trend of different groups (Right)" width="50%" />
 <p class="caption">
 Figure 1: Matrix plot of all variables (Left) and linear trend of different groups (Right)
 </p>
@@ -73,12 +73,12 @@ Figure 1: Matrix plot of all variables (Left) and linear trend of different grou
 <h3>Fit two models</h3>
 <p>We separate the data based on smoking or not, and fit a model for each set (16 subjects each). Here is the model summary.</p>
 <pre class="r"><code># fit for Smokers
-smoke_yes &lt;- subset(birthsmoke, Smoke == &quot;yes&quot;)
-mdl_yes &lt;- lm(Wgt ~ Gest, smoke_yes)
-(mdl_yes_smry &lt;- summary(mdl_yes))</code></pre>
+mdl_yes &lt;- lm(Wgt ~ Gest, birthsmoke, Smoke ==&quot;yes&quot;)
+mdl_yes_pre &lt;- round(predict(mdl_yes, data.frame(Gest = 38), interval = &quot;confidence&quot;), digits = 1)</code></pre>
 <pre><code>## 
 ## Call:
-## lm(formula = Wgt ~ Gest, data = smoke_yes)
+## lm(formula = Wgt ~ Gest, data = birthsmoke, subset = Smoke == 
+##     &quot;yes&quot;)
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
@@ -95,12 +95,13 @@ mdl_yes &lt;- lm(Wgt ~ Gest, smoke_yes)
 ## Multiple R-squared:  0.8739, Adjusted R-squared:  0.8649 
 ## F-statistic: 97.04 on 1 and 14 DF,  p-value: 1.125e-07</code></pre>
 <pre class="r"><code># fit for non-Smokers
-smoke_no &lt;- subset(birthsmoke, Smoke == &quot;no&quot;)
-mdl_no &lt;- lm(Wgt ~ Gest, smoke_no)
+mdl_no &lt;- lm(Wgt ~ Gest, birthsmoke, Smoke == &quot;no&quot;)
+mdl_no_pre &lt;- round(predict(mdl_no, data.frame(Gest = 38), interval = &quot;confidence&quot;), digits = 1)
 (mdl_no_smry &lt;- summary(mdl_no))</code></pre>
 <pre><code>## 
 ## Call:
-## lm(formula = Wgt ~ Gest, data = smoke_no)
+## lm(formula = Wgt ~ Gest, data = birthsmoke, subset = Smoke == 
+##     &quot;no&quot;)
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
