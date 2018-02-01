@@ -1,0 +1,29 @@
+---
+title: Life events
+author: Liang Zhang
+---
+
+I am now a Research Assistant at [Beijing Normal University, China](http://www.bnu.edu.cn/xxgk/xxjj/index.html). And I studied here for long years through my bachelor and master degrees.
+
+# Education
+
+* 2014-2017, Master Degree, Beijing Normal University, Cognitive Neuroscience
+* 2009-2013, Bachelor Degree, Beijing Normal University, Statistics
+
+# Skills
+
+* Programming skills
+
+    + `MATLAB`
+    : I used `MATLAB` very often when I was in my Master Degree project to analyze behavioral data from psychological field. I can fluently do programming design, data manipulation and statistical model fitting jobs using `MATLAB`.
+
+    + `R`
+    : I also used `R` very often because of its highly power in statistical processing with its package extension system and report generation by `Rmarkdown` extension. I can now fluently do programming design, data manipulation, statistical model fitting (esp. *structural equation model*), and report generation jobs with `R`. Besides, I can sort of use `rvest` package to do some web-scraping work.
+
+* Statistical skills
+
+    + Regression
+    : *Regression* is the basic of statistical modeling. I studied statistics when I was in my undergraduate ages, and, therefore, I have mastered some mathemathetics basics for statistics. I thought of regression as the most fundamental and tried my best to understand all of its details (his website is partly about it). Now I understood basics of *multiple linear regression* and *mixed-effect linear regression*. I will study more on this in the near future.
+    
+    + Structural Equation Model
+    : *Structural Equation Model* (aka *latent variable analysis*) is an expansion of multiple linear regression, which is a powerful tool to detect interesting pattern among multiple variables. I can apply this model using `R` with [`lavaan`](http://lavaan.ugent.be/) package, which was also used when I was writing my master degree thesis.
