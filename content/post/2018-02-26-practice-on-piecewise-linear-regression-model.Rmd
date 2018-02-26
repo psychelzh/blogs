@@ -1,0 +1,72 @@
+---
+title: Practice on Piecewise Linear Regression Model
+author: Liang Zhang
+date: '2018-02-26'
+categories:
+  - Practice
+tags:
+  - Linear Regression
+slug: practice-on-piecewise-linear-regression-model
+---
+
+# Introduction
+
+Basically, for any two or more predictors, there is a special kind of effect on response variable called "interaction effect". Before we do some practice on "piecewise linear regression model", let's have a review on this.
+
+Here is the original description from the learning site:
+
+>
+* Formally, a regression model contains additive effects if the response function can be written as a sum of functions of the predictor variables:
+>
+    $$\mu_y = f_1(x_1) + f_2(x_2) + \cdots + f_{p-1}(x_{p-1})$$
+>
+* In general, then, what does it mean for two predictors "**to interact**"?
+>
+    + Two predictors interact if the effect on the response variable of one predictor depends on the value of the other. 
+    + A slope parameter can no longer be interpreted as the change in the mean response for each unit increase in the predictor, while the other predictors are held constant.
+>
+* And, what are "**interaction effects**"?
+>
+    + A regression model contains interaction effects if the response function is not additive and cannot be written as a sum of functions of the predictor variables. That is, a regression model contains interaction effects if:
+>
+    $$\mu_y \neq f_1(x_1) + f_2(x_2) + \cdots + f_{p-1}(x_{p-1})$$
+
+Based on the interaction effect, there is a special type of regression called **piecewise linear regression**, which is the subject of this post.
+
+## What is piecewise linear regression?
+
+Let's recount the description from the course [STAT 501](https://onlinecourses.science.psu.edu/stat501/node/310):
+
+>
+The basic idea behind piecewise linear regression is that if the data follow different linear trends over different regions of the data then we should model the regression function in "pieces." The pieces can be connected or not connected.
+
+## Practice problems
+
+We'll use the [shipment.txt](https://onlinecourses.science.psu.edu/stat501/sites/onlinecourses.science.psu.edu.stat501/files/data/shipment.txt) data set. An electronics company periodically imports shipments of a certain large part used as a component in several of its products. The size of the shipment varies depending upon production schedules. For handling and distribution to assemby plants, shipments of size 250 thousand parts or less are sent to warehouse A; larger shipments are sent to warehouse B since this warehouse has specialized equipment that provides greater economies of scale for large shipments.
+
+1. Create a scatter plot of the data with *cost* on the $y$ axis and *size* on the $x$ axis. Based on the plot, does it seem reasonable that there are two different (but connected) regression functions — one when $x_1 < 250$ and one when $x_1 > 250$?
+    * Based on the [scatter plot](#fig:problem-1), it seems reasonable that there are two different (but connected) regression functions.
+
+```{r problem-1, message=FALSE, warning=FALSE, fig.cap="Scatter plot of shipment dataset"}
+library(tidyverse)
+library(ggthemes)
+shipment <- read_table("https://onlinecourses.science.psu.edu/stat501/sites/onlinecourses.science.psu.edu.stat501/files/data/shipment.txt")
+ggplot(shipment, aes(x1, y)) +
+  geom_point() +
+  theme_few() +
+  labs(x = "Size of shipment", y = "Cost")
+```
+
+2. What is the mean response function for shipments whose size is smaller than 250? And, what is the mean response function for shipments whose size is greater than 250? Do the two mean response functions have different slopes and connect when $x_{i1} = 250$? Based on your estimated regression function, what is the predicted cost for a shipment with a size of 125? with a size of 250? with a size of 400? Convince yourself that you get the same prediction for size = 250 regardless of which estimated regression function you use.
+    * It is plausible to fit a piecewise model. In that case, the model will be $y = \beta_0 + \beta_1 x_1 + \beta_2 x_2^* + \epsilon$, in which $x_2^* = 0$ when $x_1 <= 250$, and $x_2^* = x_1 - 250$ when $x_1 > 250$. So the mean response function for shipments whose size is smaller than 250 is $\beta_0 + \beta_1 x_1$, and the mean response function for shipments whose size is greater than 250 is $\beta_0 + \beta_1 x_1 + \beta_2 (x_1 - 250) = \beta_0 - 250 \beta_2 + (\beta_1 + \beta_2) x_1$. The two mean response functions do have different slopes and do connect (both are $\beta_0 + 250 \beta_1$) when $x_{i1} = 250$.
+    * The fitted regression function is exactly $y = 3.214 + 0.038 x_1 - 0.025 x_2^*$. The predicted cost for a shipment with a size of 125 is $3.214 + 0.038 \times 125 = 7.964$, $3.214 + 0.038 \times 250 = 12.714$ for that with a size of 250, and $3.214 + 0.038 \times 400 - 0.025 \times (400 - 250) = 14.664$, with rounding errors.
+
+```{r problem-2, echo=FALSE}
+shipment <- shipment %>% 
+  mutate(
+    x2 = as.double(x1 > 250),
+    `x2*` = (x1 - 250) * x2
+  )
+piece <- lm(y ~ x1 + `x2*`, shipment)
+piece_stat <- summary(piece)
+```

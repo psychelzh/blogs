@@ -1,0 +1,70 @@
+---
+title: Practice on Piecewise Linear Regression Model
+author: Liang Zhang
+date: '2018-02-26'
+categories:
+  - Practice
+tags:
+  - Linear Regression
+slug: practice-on-piecewise-linear-regression-model
+---
+
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Basically, for any two or more predictors, there is a special kind of effect on response variable called “interaction effect”. Before we do some practice on “piecewise linear regression model”, let’s have a review on this.</p>
+<p>Here is the original description from the learning site:</p>
+<blockquote>
+<ul>
+<li>Formally, a regression model contains additive effects if the response function can be written as a sum of functions of the predictor variables:</li>
+</ul>
+<p><span class="math display">\[\mu_y = f_1(x_1) + f_2(x_2) + \cdots + f_{p-1}(x_{p-1})\]</span></p>
+<ul>
+<li><p>In general, then, what does it mean for two predictors “<strong>to interact</strong>”?</p></li>
+<li>Two predictors interact if the effect on the response variable of one predictor depends on the value of the other.</li>
+<li><p>A slope parameter can no longer be interpreted as the change in the mean response for each unit increase in the predictor, while the other predictors are held constant.</p></li>
+<li><p>And, what are “<strong>interaction effects</strong>”?</p></li>
+<li><p>A regression model contains interaction effects if the response function is not additive and cannot be written as a sum of functions of the predictor variables. That is, a regression model contains interaction effects if:</p></li>
+</ul>
+<p><span class="math display">\[\mu_y \neq f_1(x_1) + f_2(x_2) + \cdots + f_{p-1}(x_{p-1})\]</span></p>
+</blockquote>
+<p>Based on the interaction effect, there is a special type of regression called <strong>piecewise linear regression</strong>, which is the subject of this post.</p>
+<div id="what-is-piecewise-linear-regression" class="section level2">
+<h2>What is piecewise linear regression?</h2>
+<p>Let’s recount the description from the course <a href="https://onlinecourses.science.psu.edu/stat501/node/310">STAT 501</a>:</p>
+<blockquote>
+<p>The basic idea behind piecewise linear regression is that if the data follow different linear trends over different regions of the data then we should model the regression function in “pieces.” The pieces can be connected or not connected.</p>
+</blockquote>
+</div>
+<div id="practice-problems" class="section level2">
+<h2>Practice problems</h2>
+<p>We’ll use the <a href="https://onlinecourses.science.psu.edu/stat501/sites/onlinecourses.science.psu.edu.stat501/files/data/shipment.txt">shipment.txt</a> data set. An electronics company periodically imports shipments of a certain large part used as a component in several of its products. The size of the shipment varies depending upon production schedules. For handling and distribution to assemby plants, shipments of size 250 thousand parts or less are sent to warehouse A; larger shipments are sent to warehouse B since this warehouse has specialized equipment that provides greater economies of scale for large shipments.</p>
+<ol style="list-style-type: decimal">
+<li>Create a scatter plot of the data with <em>cost</em> on the <span class="math inline">\(y\)</span> axis and <em>size</em> on the <span class="math inline">\(x\)</span> axis. Based on the plot, does it seem reasonable that there are two different (but connected) regression functions — one when <span class="math inline">\(x_1 &lt; 250\)</span> and one when <span class="math inline">\(x_1 &gt; 250\)</span>?
+<ul>
+<li>Based on the <a href="#fig:problem-1">scatter plot</a>, it seems reasonable that there are two different (but connected) regression functions.</li>
+</ul></li>
+</ol>
+<pre class="r"><code>library(tidyverse)
+library(ggthemes)
+shipment &lt;- read_table(&quot;https://onlinecourses.science.psu.edu/stat501/sites/onlinecourses.science.psu.edu.stat501/files/data/shipment.txt&quot;)
+ggplot(shipment, aes(x1, y)) +
+  geom_point() +
+  theme_few() +
+  labs(x = &quot;Size of shipment&quot;, y = &quot;Cost&quot;)</code></pre>
+<div class="figure"><span id="fig:problem-1"></span>
+<img src="/post/2018-02-26-practice-on-piecewise-linear-regression-model_files/figure-html/problem-1-1.png" alt="Scatter plot of shipment dataset" width="672" />
+<p class="caption">
+Figure 1: Scatter plot of shipment dataset
+</p>
+</div>
+<ol start="2" style="list-style-type: decimal">
+<li>What is the mean response function for shipments whose size is smaller than 250? And, what is the mean response function for shipments whose size is greater than 250? Do the two mean response functions have different slopes and connect when <span class="math inline">\(x_{i1} = 250\)</span>? Based on your estimated regression function, what is the predicted cost for a shipment with a size of 125? with a size of 250? with a size of 400? Convince yourself that you get the same prediction for size = 250 regardless of which estimated regression function you use.
+<ul>
+<li>It is plausible to fit a piecewise model. In that case, the model will be <span class="math inline">\(y = \beta_0 + \beta_1 x_1 + \beta_2 x_2^* + \epsilon\)</span>, in which <span class="math inline">\(x_2^* = 0\)</span> when <span class="math inline">\(x_1 &lt;= 250\)</span>, and <span class="math inline">\(x_2^* = x_1 - 250\)</span> when <span class="math inline">\(x_1 &gt; 250\)</span>. So the mean response function for shipments whose size is smaller than 250 is <span class="math inline">\(\beta_0 + \beta_1 x_1\)</span>, and the mean response function for shipments whose size is greater than 250 is <span class="math inline">\(\beta_0 + \beta_1 x_1 + \beta_2 (x_1 - 250) = \beta_0 - 250 \beta_2 + (\beta_1 + \beta_2) x_1\)</span>. The two mean response functions do have different slopes and do connect (both are <span class="math inline">\(\beta_0 + 250 \beta_1\)</span>) when <span class="math inline">\(x_{i1} = 250\)</span>.</li>
+<li>The fitted regression function is exactly <span class="math inline">\(y = 3.214 + 0.038 x_1 - 0.025 x_2^*\)</span>. The predicted cost for a shipment with a size of 125 is <span class="math inline">\(3.214 + 0.038 \times 125 = 7.964\)</span>, <span class="math inline">\(3.214 + 0.038 \times 250 = 12.714\)</span> for that with a size of 250, and <span class="math inline">\(3.214 + 0.038 \times 400 - 0.025 \times (400 - 250) = 14.664\)</span>, with rounding errors.</li>
+</ul></li>
+</ol>
+</div>
+</div>
