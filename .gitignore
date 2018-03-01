@@ -6,3 +6,14 @@
 
 # cached files from blogdown
 blogdown
+
+# MS office binary files
+*.doc
+*.docx
+*.ppt
+*.pptx
+*.xls
+*.xlsx
+
+# other binary document
+*.pdf
